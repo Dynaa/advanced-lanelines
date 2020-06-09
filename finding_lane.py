@@ -115,7 +115,7 @@ def fit_poly(img_shape, leftx, lefty, rightx, righty):
 	right_fit = np.polyfit(righty, rightx, 2)
 	# Generate x and y values for plotting
 	ploty = np.linspace(0, img_shape[0]-1, img_shape[0])
-	### TO-DO: Calc both polynomials using ploty, left_fit and right_fit ###
+	###  Calc both polynomials using ploty, left_fit and right_fit ###
 	left_fitx = left_fit[0]*ploty**2+left_fit[1]*ploty+left_fit[2]
 	right_fitx = right_fit[0]*ploty**2+right_fit[1]*ploty+right_fit[2]
     
@@ -139,8 +139,6 @@ def search_around_poly(binary_warped):
     
 	### Set the area of search based on activated x-values ###
 	### within the +/- margin of our polynomial function ###
-	### Hint: consider the window areas for the similarly named variables ###
-	### in the previous quiz, but change the windows to our new search area ###
 	left_lane_inds = ((nonzerox > (left_fit[0]*(nonzeroy**2) + left_fit[1]*nonzeroy + left_fit[2] - margin)) & (nonzerox < (left_fit[0]*(nonzeroy**2) + left_fit[1]*nonzeroy + left_fit[2] + margin)))
 	right_lane_inds = ((nonzerox > (right_fit[0]*(nonzeroy**2) + right_fit[1]*nonzeroy + right_fit[2] - margin)) & (nonzerox < (right_fit[0]*(nonzeroy**2) + right_fit[1]*nonzeroy + right_fit[2] + margin)))
     
@@ -155,7 +153,7 @@ def search_around_poly(binary_warped):
 
 	## Visualization ##
 	# Create an image to draw on and an image to show the selection window
-	out_img = np.dstack((binary_warped, binary_warped, binary_warped))*255
+	"""out_img = np.dstack((binary_warped, binary_warped, binary_warped))*255
 	window_img = np.zeros_like(out_img)
 	# Color in left and right line pixels
 	out_img[nonzeroy[left_lane_inds], nonzerox[left_lane_inds]] = [255, 0, 0]
@@ -180,9 +178,9 @@ def search_around_poly(binary_warped):
 	# Plot the polynomial lines onto the image
 	plt.plot(left_fitx, ploty, color='yellow')
 	plt.plot(right_fitx, ploty, color='yellow')
-	## End visualization steps ##
+	## End visualization steps ##"""
     
-	return result
+	return left_lane_inds, right_lane_inds, left_fitx, right_fitx, ploty
 
 
 def fit_polynomial(binary_warped):
