@@ -1,4 +1,4 @@
-## Advanced Lane Finding
+# Advanced Lane Finding
 
 
 In this project, your goal is to write a software pipeline to identify the lane boundaries in a video. Compared to the first project, line detection is more successful. Several different types of filters were used, moreover the representation of the lines is based on the use of a polynomial of the second degrees, and more on a line equation.
@@ -9,7 +9,7 @@ Pipeline
 
 In order to arrive at the final result, several steps were necessary. Several functions have been implemented. The various calls to these functions are combined in the `image_pipeline.py` file. 
 
-**1. Camera calibration**
+## 1. Camera calibration
 
 Image distorsion occurs when a cmera looks at 3D objects in real worl and transforms them into 2D images. In this first step, the goal was to determine the camera distorsion models in order to "undistort" images provided by this camera. To do that a set of chessboard images was provided. 
 In the file `camera_calibration.py` the different steps of the calibration are developed. The following steps are done : 
@@ -34,7 +34,7 @@ Here is some samples images (Corners searching) :
 Given the corners found, it possible to compute undistort parameters. Those are saved in a file placed here : 
 [Calibration parameters](https://github.com/Dynaa/advanced-lanelines/blob/master/camera_cal/wide_dist_pickle.p)
 
-***2. Application of parameters in order to undistort images.***
+## 2. Application of parameters in order to undistort images
 
 Applying the parameters allows to undistort images : 
 
@@ -49,7 +49,7 @@ Applying the parameters allows to undistort images :
 <img src="https://github.com/Dynaa/advanced-lanelines/blob/master/output_images/camera_cal_output/undistort/undistort12.jpg" width="280" alt="Undistorted image" /> <img src="https://github.com/Dynaa/advanced-lanelines/blob/master/output_images/camera_cal_output/undistort/undistort13.jpg" width="280" alt="Undistorted image" /> <img src="https://github.com/Dynaa/advanced-lanelines/blob/master/output_images/camera_cal_output/undistort/undistort14.jpg" width="280" alt="Undistorted image" /> 
 
 
-***3. Perspective transform***
+## 3. Perspective transform
 
 In this step, I define a region of interest on the image and then apply a transformation in order to obtain a bird-view. 
 The function is based on the usage of ```cv.getPersepectiveTransform(src,dst)```, this function allow to compute a matrix M. This matrix is then used in ```cv2.warpPerspective(img, M, img.size, cv2.INTER_LINEAR)``` function. 
@@ -80,7 +80,7 @@ def unwarp(img):
 
 
 
-***4. Binary image creation***
+## 4. Binary image creation
 
 As view during the lesson, different kind of color transform and gradients were used in order to detect pixels belonging to lines. 
 
@@ -99,9 +99,9 @@ All theses transformations are made in the file named `image_processing.py`. The
 <img src="https://github.com/Dynaa/advanced-lanelines/blob/master/test_images/test6.jpg" width="440" alt="Original image" /> <img src="https://github.com/Dynaa/advanced-lanelines/blob/master/output_images/image_processing_output/thresold_test6.jpg" width="440" alt="Filtered image" />
 
 
-***5. Finding Lines***
+## 5. Finding Lines
 
-**1. Histogram usage**
+### 1. Histogram usage
 
 In order to determine if pixels are related to left or right line, an Histogram was used.
 <img src="https://github.com/Dynaa/advanced-lanelines/blob/master/output_images/test_images_output/unwarp_filter_histogramtest1.png" width="960" alt="Histogram from binary image" /> 
@@ -118,7 +118,7 @@ In order to determine if pixels are related to left or right line, an Histogram 
 4. Now, determining actived pixels within the current window. 
 
 
-**2. Polynom fiting**
+### 2. Polynom fitting
 
 Given the pixels belonging to left and right lines, we the fit a second order polynom using `np.polyfit`. This function allow us to find the polynom coefficients. 
 test1.jpg : 
@@ -134,15 +134,61 @@ test5.jpg :
 test6.jpg : 
 <img src="https://github.com/Dynaa/advanced-lanelines/blob/master/output_images/test_images_output/Figure_1_test6.png" width="1000" alt="Final image" /> 
 
-**3. Curvature and offset**
+### 3. Curvature and offset 
+
+From the polynom fitting step, it's then possible to determine the curvature of the road, as well as the lateral position of the vehicle in the lane. 
+
+#### 1. Curvature
+The radius of curvature at any point xx of the function x = f(y)x=f(y) is given as follows:
+
+<img src="https://github.com/Dynaa/advanced-lanelines/blob/master/examples/Curvature.png" width="240" alt="Curvature" /> 
+
+In the case of the second order polynomial above, the first and second derivatives are:
+
+<img src="https://github.com/Dynaa/advanced-lanelines/blob/master/examples/Derivatives.png" width="240" alt="Curvature" /> 
+
+So, our equation for radius of curvature becomes:
+
+<img src="https://github.com/Dynaa/advanced-lanelines/blob/master/examples/Curvature2.png" width="240" alt="Curvature" /> 
 
 
-* Use color transforms, gradients, etc., to create a thresholded binary image.
-* Apply a perspective transform to rectify binary image ("birds-eye view").
-* Detect lane pixels and fit to find the lane boundary.
-* Determine the curvature of the lane and vehicle position with respect to center.
-* Warp the detected lane boundaries back onto the original image.
-* Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position.
+#### 2. Lateral position
+The offset of the lane center from the center of the image (converted from pixels to meters) is the distance from the center of the lane. We detect the left line bottom and the right line bottom, given those two values, we can compute the lateral position. 
+
+### 4. Final result on images
+Once we have done all these steps, the image is unwarp and detected lines are displayed on top of the original image. The transpose of the matrix computed in the warping step is used. 
+
+<img src="
+https://github.com/Dynaa/advanced-lanelines/blob/master/output_images/test_images_output/original_finaltest1.png" width="960" alt="Final result" /> 
+
+<img src="
+https://github.com/Dynaa/advanced-lanelines/blob/master/output_images/test_images_output/original_finaltest2.png" width="960" alt="Final result" />
+
+<img src="
+https://github.com/Dynaa/advanced-lanelines/blob/master/output_images/test_images_output/original_finaltest3.png" width="960" alt="Final result" />
+
+<img src="
+https://github.com/Dynaa/advanced-lanelines/blob/master/output_images/test_images_output/original_finaltest4.png" width="960" alt="Final result" />
+
+<img src="
+https://github.com/Dynaa/advanced-lanelines/blob/master/output_images/test_images_output/original_finaltest5.png" width="960" alt="Final result" />
+
+<img src="
+https://github.com/Dynaa/advanced-lanelines/blob/master/output_images/test_images_output/original_finaltest6.png" width="240" alt="Final result" />
+
+### 5. Application on videos
+
+#### 1. Project video adaptation
+During application of the pipeline on videos, some adaptations were needed. I used the advice to use a Line class declare in `Line.py`. 
+
+These allow me to store line informations from previous frames. In case of non detection, it's then possible to use the lines from past images. For display purpose and readibility, an average of the last 5 curvatures as well 5 last positions ares used.
+
+The video can be found here : [Video Challenge output](https://youtu.be/1D7dhFfJI-U)
+
+
+#### 2. Challenge video adaptation 
+
+
 
 The images for camera calibration are stored in the folder called `camera_cal`.  The images in `test_images` are for testing your pipeline on single frames.  If you want to extract more test images from the videos, you can simply use an image writing method like `cv2.imwrite()`, i.e., you can read the video in frame by frame as usual, and for frames you want to save for later you can write to an image file.  
 
