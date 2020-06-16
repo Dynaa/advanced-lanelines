@@ -158,23 +158,17 @@ The offset of the lane center from the center of the image (converted from pixel
 ### 4. Final result on images
 Once we have done all these steps, the image is unwarp and detected lines are displayed on top of the original image. The transpose of the matrix computed in the warping step is used. 
 
-<img src="
-https://github.com/Dynaa/advanced-lanelines/blob/master/output_images/test_images_output/original_finaltest1.png" width="960" alt="Final result" /> 
+<img src="https://github.com/Dynaa/advanced-lanelines/blob/master/output_images/test_images_output/original_finaltest1.png" width="1000" alt="Final result" /> 
 
-<img src="
-https://github.com/Dynaa/advanced-lanelines/blob/master/output_images/test_images_output/original_finaltest2.png" width="960" alt="Final result" />
+<img src="https://github.com/Dynaa/advanced-lanelines/blob/master/output_images/test_images_output/original_finaltest2.png" width="1000" alt="Final result" />
 
-<img src="
-https://github.com/Dynaa/advanced-lanelines/blob/master/output_images/test_images_output/original_finaltest3.png" width="960" alt="Final result" />
+<img src="https://github.com/Dynaa/advanced-lanelines/blob/master/output_images/test_images_output/original_finaltest3.png" width="1000" alt="Final result" />
 
-<img src="
-https://github.com/Dynaa/advanced-lanelines/blob/master/output_images/test_images_output/original_finaltest4.png" width="960" alt="Final result" />
+<img src="https://github.com/Dynaa/advanced-lanelines/blob/master/output_images/test_images_output/original_finaltest4.png" width="1000" alt="Final result" />
 
-<img src="
-https://github.com/Dynaa/advanced-lanelines/blob/master/output_images/test_images_output/original_finaltest5.png" width="960" alt="Final result" />
+<img src="https://github.com/Dynaa/advanced-lanelines/blob/master/output_images/test_images_output/original_finaltest5.png" width="1000" alt="Final result" />
 
-<img src="
-https://github.com/Dynaa/advanced-lanelines/blob/master/output_images/test_images_output/original_finaltest6.png" width="240" alt="Final result" />
+<img src="https://github.com/Dynaa/advanced-lanelines/blob/master/output_images/test_images_output/original_finaltest6.png" width="1000" alt="Final result" />
 
 ### 5. Application on videos
 
@@ -186,18 +180,13 @@ These allow me to store line informations from previous frames. In case of non d
 The video can be found here : [Video Challenge output](https://youtu.be/1D7dhFfJI-U)
 
 
-#### 2. Challenge video adaptation 
+#### 2. Challenge & harder video adaptation 
 
+I've tried my pipeline on challenge and harder videos. It failed, but I have some ideas to improve my pipeline : 
+1. Add coherence check between left and right line. Based on that, id there is some inconsciency, we can choose to used the lane which is based on more pixels as model, to compute the second line. 
 
+2. The harder video is really challenging. The brightness is changing a lot from one frame to another. It can be insteresting to adapt thresolds regarding the brightness of the current frame. 
+The curvature of the road is really small in some cases. I could be recommend to change the warp function in order to look at near to the bumper of the car. 
 
-The images for camera calibration are stored in the folder called `camera_cal`.  The images in `test_images` are for testing your pipeline on single frames.  If you want to extract more test images from the videos, you can simply use an image writing method like `cv2.imwrite()`, i.e., you can read the video in frame by frame as usual, and for frames you want to save for later you can write to an image file.  
-
-To help the reviewer examine your work, please save examples of the output from each stage of your pipeline in the folder called `output_images`, and include a description in your writeup for the project of what each image shows.    The video called `project_video.mp4` is the video your pipeline should work well on.  
-
-The `challenge_video.mp4` video is an extra (and optional) challenge for you if you want to test your pipeline under somewhat trickier conditions.  The `harder_challenge.mp4` video is another optional challenge and is brutal!
-
-If you're feeling ambitious (again, totally optional though), don't stop there!  We encourage you to go out and take video of your own, calibrate your camera and show us how you would implement this project from scratch!
-
-## How to write a README
-A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
+For sure, I'll try to improve and test my suggestion in the coming weeks ! 
 
