@@ -56,7 +56,9 @@ def color_thresolding(img, show, s_thresh=(180, 255), h_thresh=(15,100), b_thres
 	
 	# Separate R channels 
 	bgr = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
-	B = bgr[:,:,0]
+	b_channel_of_bgr = cv2.cvtColor(img, cv2.COLOR_BGR2Lab)[:,:,2]   
+
+	#B = bgr[:,:,0]
 	G = bgr[:,:,1]
 	R = bgr[:,:,2]
 
@@ -74,8 +76,8 @@ def color_thresolding(img, show, s_thresh=(180, 255), h_thresh=(15,100), b_thres
 
 	# Yellow range 
 	# yellow color mask
-	lower = np.uint8([10, 0,   100])
-	upper = np.uint8([40, 255, 255])
+	lower = np.uint8([10, 0,   70])
+	upper = np.uint8([50, 255, 255])
 	yellow_mask = cv2.inRange(hls, lower, upper)
 
 	# Sobel x
@@ -95,19 +97,25 @@ def color_thresolding(img, show, s_thresh=(180, 255), h_thresh=(15,100), b_thres
 	h_binary = np.zeros_like(h_channel)
 	h_binary[(h_channel >= h_thresh[0]) & (h_channel <= h_thresh[1])] = 1
 
-	# Thresold R channel 
-	b_binary = np.zeros_like(B)
-	b_binary[(R > b_thresh[0]) & (R <= b_thresh[1])] = 1
+	# Thresold b channel 
+	b_binary = np.zeros_like(b_channel_of_bgr)
+	b_binary[(b_channel_of_bgr > b_thresh[0]) & (b_channel_of_bgr <= b_thresh[1])] = 1
 
 	# Thresold l channel 
 	l_binary = np.zeros_like(l_channel)
-	l_binary[(l_channel > l_thresh[0]) & (R <= l_thresh[1])] = 1
+	l_binary[(l_channel > l_thresh[0]) & (l_channel <= l_thresh[1])] = 1
 
 
 	# Stack each channel
 	#color_binary = np.dstack(( np.zeros_like(sxbinary), sxbinary, s_binary, h_binary)) * 255
-	combined_binary = np.zeros_like(yellow_mask)
-	combined_binary[(l_binary == 1) | (yellow_mask == 1)] = 1
+	yellow_binary = np.zeros_like(yellow_mask)
+	#yellow_binary[(l_binary == 1) | (yellow_mask == 1)] = 1
+
+	combined_binary = np.zeros_like(s_binary)
+	combined_binary[(l_binary == 1) | (b_binary == 1) | (yellow_mask == 1)] = 1
+
+	combined_binary = cv2.add(combined_binary,yellow_mask)
+
 	if(show==1) : 
 		f, (ax1, ax2, ax3, ax4, ax5) = plt.subplots(1, 5, figsize=(24, 9))
 		f.tight_layout()
@@ -117,14 +125,14 @@ def color_thresolding(img, show, s_thresh=(180, 255), h_thresh=(15,100), b_thres
 		ax2.set_title('l_binary', fontsize=15)
 		ax3.imshow(yellow_mask)
 		ax3.set_title('yellow_mask', fontsize=15)
-		ax4.imshow(combined_binary, cmap='gray')
-		ax4.set_title('combined_binary', fontsize=15)
-		ax5.imshow(yellow_mask, cmap='gray')
-		ax5.set_title('yellow_mask', fontsize=15)
+		ax4.imshow(b_binary)
+		ax4.set_title('b_binary', fontsize=15)
+		ax5.imshow(combined_binary)
+		ax5.set_title('combined_binary', fontsize=15)
 		plt.subplots_adjust(left=0., right=1, top=0.9, bottom=0.)
 		plt.show()
 
-	return yellow_mask
+	return combined_binary
 
 
 
@@ -132,7 +140,7 @@ def color_thresolding(img, show, s_thresh=(180, 255), h_thresh=(15,100), b_thres
 
 if __name__ == '__main__':
 	# Read in an image and grayscale it
-	image = mpimg.imread('output_images/unwarp_test3.jpg')
+	image = mpimg.imread('test_images/start1001.jpg')
 
 	# Apply each of the thresholding functions
 	gradx = abs_sobel_thresh(image, orient='x', sobel_kernel=ksize, thresh=(100, 100))
@@ -143,7 +151,7 @@ if __name__ == '__main__':
 	combined = np.zeros_like(dir_binary)
 	combined[((gradx == 1) & (grady == 1)) | ((mag_binary == 1) & (dir_binary == 1))] = 1
 
-	color = color_thresolding(image, 0)
+	color = color_thresolding(image, 1)
 	#cv2.imwrite('output_images/thresold_test3.jpg', color)
 
 

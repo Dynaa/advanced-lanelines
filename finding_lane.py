@@ -120,22 +120,43 @@ def fit_poly(img_shape, leftx, lefty, rightx, righty):
 	
 	return left_fit, right_fit, left_fitx, right_fitx, ploty
 
-def search_around_poly(binary_warped):
-	leftx, lefty, rightx, righty, out_img = find_lane_pixels(binary_warped)
-
+def check_line_coherence(left_fit, right_fit, left_fitx, right_fitx, ploty)
 	
-	left_fit = np.polyfit(lefty, leftx, 2)
-	right_fit = np.polyfit(righty,rightx, 2)
+
+def search_around_poly(binary_warped, left_line, right_line):
 
 	# HYPERPARAMETER
-	# Choose the width of the margin around the previous polynomial to search
-	# The quiz grader expects 100 here, but feel free to tune on your own!
 	margin = 100
 
 	# Grab activated pixels
 	nonzero = binary_warped.nonzero()
 	nonzeroy = np.array(nonzero[0])
 	nonzerox = np.array(nonzero[1])
+
+
+	# Find pixels reltive to left and right line using histogram
+	leftx, lefty, rightx, righty, out_img = find_lane_pixels(binary_warped)
+	left_fit = []
+	right_fit = []
+	ploty = []
+	# Testing if there is left and right pixels related to line
+	if leftx.size == 0 or rightx.size == 0 : 
+		if left_line.allx == [] or right_line.allx == []: 
+			return leftx, lefty, rightx, righty, left_fit, right_fit, ploty, binary_warped
+		else: 
+			leftx = left_line.allx[-1]
+			lefty = left_line.ally[-1]
+			rightx = right_line.allx[-1]
+			righty = right_line.ally[-1]
+	else:
+		left_line.allx.append(leftx)
+		left_line.ally.append(lefty)
+		right_line.allx.append(rightx)
+		right_line.ally.append(righty)
+
+
+	left_fit = np.polyfit(lefty, leftx, 2)
+	right_fit = np.polyfit(righty,rightx, 2)
 	
 	### Set the area of search based on activated x-values ###
 	### within the +/- margin of our polynomial function ###
@@ -150,7 +171,24 @@ def search_around_poly(binary_warped):
 	
 	# Fit new polynomials
 	#left_fitx, right_fitx, ploty = fit_poly(binary_warped.shape, leftx, lefty, rightx, righty)
+	if leftx.size == 0 or rightx.size == 0 : 
+		if left_line.allx == [] or right_line.allx == []: 
+			return leftx, lefty, rightx, righty, left_fit, right_fit, ploty, binary_warped
+		else: 
+			leftx = left_line.allx[-1]
+			lefty = left_line.ally[-1]
+			rightx = right_line.allx[-1]
+			righty = right_line.ally[-1]
+	else:
+		left_line.allx.append(leftx)
+		left_line.ally.append(lefty)
+		right_line.allx.append(rightx)
+		right_line.ally.append(righty)
+	
 	left_fit, right_fit, left_fitx, right_fitx, ploty = fit_poly(binary_warped.shape, leftx, lefty, rightx, righty)
+
+	# Check coherence between left and right line
+
 	## Visualization ##
 	# Create an image to draw on and an image to show the selection window
 	out_img = np.dstack((binary_warped, binary_warped, binary_warped))*255
@@ -175,7 +213,7 @@ def search_around_poly(binary_warped):
 	cv2.fillPoly(window_img, np.int_([right_line_pts]), (0,255, 0))
 	result = cv2.addWeighted(out_img, 1, window_img, 0.3, 0)
 
-	return leftx, lefty, rightx, righty, result
+	return leftx, lefty, rightx, righty, left_fit, right_fit, ploty, result
 
 
 def fit_polynomial(binary_warped):
@@ -217,9 +255,6 @@ def measure_curvature_real(binary_warped, ploty, left_fit, right_fit):
 	ym_per_pix = 30/720 # meters per pixel in y dimension
 	xm_per_pix = 3.7/700 # meters per pixel in x dimension
 
-	# Start by generating our fake example data
-	# Make sure to feed in your real data instead in your project!
-	#ploty, left_fit_cr, right_fit_cr = generate_data(ym_per_pix, xm_per_pix)
 
 	leftx = left_fit[0]*ploty**2 + left_fit[1]*ploty +left_fit[2]
 	rightx = right_fit[0]*ploty**2 + right_fit[1]*ploty + right_fit[2]
@@ -234,7 +269,7 @@ def measure_curvature_real(binary_warped, ploty, left_fit, right_fit):
 	# We'll choose the maximum y-value, corresponding to the bottom of the image
 	y_eval = np.max(ploty)
 
-	##### TO-DO: Implement the calculation of R_curve (radius of curvature) #####
+	##### Calculation of R_curve (radius of curvature) #####
 	left_curverad = ((1+(2*left_fit_cr[0]*y_eval*ym_per_pix+left_fit_cr[1])**2)**1.5)/(np.absolute(left_fit_cr[0]*2))  ## Implement the calculation of the left line here
 	right_curverad = ((1+(2*right_fit_cr[0]*y_eval*ym_per_pix+right_fit_cr[1])**2)**1.5)/(np.absolute(right_fit_cr[0]*2))  ## Implement the calculation of the right line here
 

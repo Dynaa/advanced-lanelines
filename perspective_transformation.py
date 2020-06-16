@@ -11,10 +11,13 @@ def unwarp(img):
 
 	
 	# Define 4 sources points : picked manually 
-	src = np.float32([[490,480],[800,480],[1250,720],[40,720]])
+	left=[150,720] #left bottom
+	right=[1250,720] #right bottom 
+	apex_left=[590,450] # left top 
+	apex_right=[700,450] # right top 
 
-	# Define 4 destination points
-	dst = np.float32([[0,0],[1280,0],[1250,720],[40,720]])
+	src=np.float32([left,apex_left,apex_right,right]) # Source Points 
+	dst= np.float32([[200 ,720], [200  ,0], [980 ,0], [980 ,720]]) # Destination Points 
 
 	M = cv2.getPerspectiveTransform(src,dst)
 	warped = cv2.warpPerspective(img, M, (img.shape[1], img.shape[0]), flags=cv2.INTER_LINEAR)
