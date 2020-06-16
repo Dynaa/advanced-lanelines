@@ -158,23 +158,17 @@ The offset of the lane center from the center of the image (converted from pixel
 ### 4. Final result on images
 Once we have done all these steps, the image is unwarp and detected lines are displayed on top of the original image. The transpose of the matrix computed in the warping step is used. 
 
-<img src="
-https://github.com/Dynaa/advanced-lanelines/blob/master/output_images/test_images_output/original_finaltest1.png" width="960" alt="Final result" /> 
+<img src="https://github.com/Dynaa/advanced-lanelines/blob/master/output_images/test_images_output/original_finaltest1.png" width="1000" alt="Final result" /> 
 
-<img src="
-https://github.com/Dynaa/advanced-lanelines/blob/master/output_images/test_images_output/original_finaltest2.png" width="960" alt="Final result" />
+<img src="https://github.com/Dynaa/advanced-lanelines/blob/master/output_images/test_images_output/original_finaltest2.png" width="1000" alt="Final result" />
 
-<img src="
-https://github.com/Dynaa/advanced-lanelines/blob/master/output_images/test_images_output/original_finaltest3.png" width="960" alt="Final result" />
+<img src="https://github.com/Dynaa/advanced-lanelines/blob/master/output_images/test_images_output/original_finaltest3.png" width="1000" alt="Final result" />
 
-<img src="
-https://github.com/Dynaa/advanced-lanelines/blob/master/output_images/test_images_output/original_finaltest4.png" width="960" alt="Final result" />
+<img src="https://github.com/Dynaa/advanced-lanelines/blob/master/output_images/test_images_output/original_finaltest4.png" width="1000" alt="Final result" />
 
-<img src="
-https://github.com/Dynaa/advanced-lanelines/blob/master/output_images/test_images_output/original_finaltest5.png" width="960" alt="Final result" />
+<img src="https://github.com/Dynaa/advanced-lanelines/blob/master/output_images/test_images_output/original_finaltest5.png" width="1000" alt="Final result" />
 
-<img src="
-https://github.com/Dynaa/advanced-lanelines/blob/master/output_images/test_images_output/original_finaltest6.png" width="240" alt="Final result" />
+<img src="https://github.com/Dynaa/advanced-lanelines/blob/master/output_images/test_images_output/original_finaltest6.png" width="1000" alt="Final result" />
 
 ### 5. Application on videos
 
